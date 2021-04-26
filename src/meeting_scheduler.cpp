@@ -7,17 +7,18 @@
 
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 
 class Meeting;
 
-typedef vector<Meeting> Calender;
+typedef unordered_map<int, vector<Meeting>> Calender;
 
 class Room {
 public:
 	Room(string);
-	bool book(int, int);
+	bool book(int,int, int);
 	const string& getName() const;
 
 private:
@@ -40,7 +41,7 @@ class Scheduler {
 	vector<Room> rooms;
 public:
 	Scheduler(vector<Room>);
-	string book(int, int);
+	string book(int,int, int);
 };
 
 
@@ -48,14 +49,14 @@ Room::Room(string name){
 	this->name = name;
 }
 
-bool Room::book(int start,int end){
-	for(Meeting m: calender){
+bool Room::book(int day,int start,int end){
+	for(Meeting m: calender[day]){
 		// to be implemented later
 		if(m.getStart() < end && start < m.getEnd())
 			return false;
 	}
 	Meeting meeting(start,end,*this);
-	calender.push_back(meeting);
+	calender[day].push_back(meeting);
 	return true;
 }
 
@@ -81,9 +82,9 @@ Scheduler::Scheduler(vector<Room> rooms){
 	this->rooms = rooms;
 }
 
-string Scheduler::book(int start,int end){
+string Scheduler::book(int day, int start,int end){
 	for(Room &room: rooms){
-		bool flag = room.book(start,end);
+		bool flag = room.book(day,start,end);
 		if(flag==true)
 			return room.getName();
 	}
@@ -103,11 +104,11 @@ int main() {
 
 	Scheduler scheduler(roomVec);
 
-	cout << scheduler.book(2,5) <<endl;
-	cout << scheduler.book(5,8) <<endl;
-	cout << scheduler.book(4,8) <<endl;
-	cout << scheduler.book(3,6) <<endl;
-	cout << scheduler.book(7,8) <<endl;
-	cout << scheduler.book(6,9) <<endl;
+	cout << scheduler.book(15,2,5) <<endl;
+	cout << scheduler.book(15,5,8) <<endl;
+	cout << scheduler.book(15,4,8) <<endl;
+	cout << scheduler.book(15,3,6) <<endl;
+	cout << scheduler.book(15,7,8) <<endl;
+	cout << scheduler.book(16,6,9) <<endl;
 	return 0;
 }
